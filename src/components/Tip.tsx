@@ -1,10 +1,9 @@
-import { Button, StyleSheet, Text, TouchableOpacityBase, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React, { FC, useState } from 'react';
 import { TTodo } from '../store/types/todo';
 import CheckBox from '@react-native-community/checkbox';
 //@ts-ignore
 import styled from 'styled-components/native';
-import Row from './Row';
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FONTS } from '../config';
@@ -25,54 +24,66 @@ const Tip: FC<TTipProps> = ({ id, description, date, title, isDone, onToggleTip,
     const [showDescr, setShowDescr] = useState(false);
 
     return (
-        <View style={{
-            backgroundColor: isDone ? 'green' : 'white',
-            shadowColor: "#000",
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 0,
-            elevation: 5,
-            padding: 10,
-            marginBottom: 10,
-            borderRadius: 5,
-        }}>
-            <Row style={{
-                paddingHorizontal: 5,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                // borderWidth: 1,
-                // width: '85%',
-                // padding: 10,
-                // height: 50,
-                // marginBottom: 10,
-            }}>
+        <Container isDone={isDone} style={styles.shadow}>
+            <Row>
                 <CheckBox
                     value={isDone}
                     onValueChange={toggleTip}
                 />
-                <Text style={{
-                    textDecorationLine: isDone ? 'line-through' : 'none',
-                    width: '75%',
-                    color: isDone ? 'white' : 'black',
-                    fontFamily: FONTS.regular,
-                    fontSize: 16,
-                }}>
+                <Title isDone={isDone}>
                     {title}
-                </Text>
+                </Title>
                 <TouchableOpacity onPress={deleteTip}>
                     <Icon name="trash" size={25} color="red" />
                 </TouchableOpacity>
             </Row>
-            {showDescr && <Text>{description}</Text>}
+            {showDescr &&
+                <Description isDone={isDone} >{description}</Description>
+            }
             {/* <Text>{date?.toDateString()}</Text> */}
-        </View>
+        </Container>
     );
 };
 
-const Container = styled.View`
-    `
+const Row = styled.View`
+    flex-direction: row;
+    padding-right: 5px;
+    padding-left: 5px;
+    align-Items: center;
+    justify-Content: space-between;
+`
+const Description = styled.Text<{ isDone: boolean }>`
+    width: 75%;
+    color: ${({ isDone }) => isDone ? 'white' : 'black'};
+    fontFamily: ${FONTS.regular};
+    fontSize: 16px;
+`
+
+const Title = styled.Text<{ isDone: boolean }>`
+    text-Decoration-Line: ${({ isDone }) => isDone ? 'line-through' : 'none'};
+    width: 75%;
+    color: ${({ isDone }) => isDone ? 'white' : 'black'};
+    fontFamily: ${FONTS.regular};
+    fontSize: 16px;
+`
+
+const Container = styled.View<{ isDone: boolean }>`
+    background-Color: ${({ isDone }) => isDone ? 'green' : 'white'};
+    padding: 10px;
+    margin-Bottom: 10px;
+    border-Radius: 5px;
+`
+const styles = StyleSheet.create({
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 0,
+        elevation: 5,
+    }
+})
 
 export default Tip;
