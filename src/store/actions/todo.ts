@@ -10,6 +10,8 @@ export const deleteTodo = createAction<{
     id: number,
 }, "DELETE_TODO">("DELETE_TODO");
 
+export const clear = createAction("CLEAR");
+
 export const toggleTodo = createAction<{
     id: number,
     value: boolean

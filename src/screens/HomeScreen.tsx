@@ -9,31 +9,49 @@ import { useTypedSelector } from '../store/store';
 import { addTodo, deleteTodo, toggleTodo } from '../store/actions/todo';
 import Tip from '../components/Tip';
 import { TouchableOpacity } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Row from '../components/Row';
+import { FONTS } from '../config';
+import AddButton from '../components/AddButton';
+import Picker from '../components/DropDownPicker';
+
+export type TVariants = 'all' | 'completed' | 'inprogress';
 
 const HomeScreen = () => {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+
+    const variants: TVariants[] = ['all', 'completed', 'inprogress'];
+
+    const [selectedVariant, setSelectedVariant] = useState(variants[0]);
 
     const { todos } = useTypedSelector(state => state.todo);
 
     const [query, setQuery] = useState('');
-    const searchedTips = useMemo(() => todos.filter(e => e.title.includes(query)), [query, todos])
+
+    const searchedTips = useMemo(
+        () => todos
+            .filter(({ isDone }) =>
+                selectedVariant == 'all' ? true : selectedVariant == 'completed' ? isDone : !isDone
+            )
+            .filter(e => e.title.includes(query))
+        , [selectedVariant, todos, query]
+    );
 
     const [date, setDate] = useState(new Date())
     const [title, settitle] = useState('');
     const [description, setdescription] = useState('');
-    // ref
+
     const bottomSheetRef = useRef<BottomSheet>(null);
 
-    // variables
     const snapPoints = useMemo(() => ['1%', '75%'], []);
 
-    // callbacks
     const handleSheetChanges = useCallback((index: number) => {
-        console.log('handleSheetChanges', index);
+        //console.log('handleSheetChanges', index);
     }, []);
+
+    const [open, setOpen] = useState(false)
 
     const handleClosePress = () => bottomSheetRef?.current?.close()
 
@@ -41,6 +59,10 @@ const HomeScreen = () => {
 
     const onAddTip = () => {
         dispatch(addTodo({ title, description, date }));
+        setdescription('');
+        settitle('');
+        setDate(new Date());
+        handleClosePress();
     }
     const onDeleteTip = (id: number) => {
         dispatch(deleteTodo({ id }));
@@ -52,33 +74,45 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                onPress={handleOpenPress}
-                style={{
-                    top: 70,
-                    right: 0,
-                    position: 'absolute',
-                    borderTopLeftRadius: 25,
-                    borderBottomLeftRadius: 25,
-                    borderLeftWidth: 1,
-                    borderBottomWidth: 1,
-                    borderTopWidth: 1,
-                    //borderWidth: 1,
-                    width: 50,
-                    height: 50,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    //borderRadius: 25
-                }}>
-                <Text>+</Text>
-            </TouchableOpacity>
+            <AddButton handleOpenPress={handleOpenPress} />
 
-            <TextInput
-                style={{ borderWidth: 1, width: '80%', padding: 10, height: 50, marginBottom: 10, }}
-                placeholder='Search'
-                onChangeText={setQuery}
+            <Row style={{
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 1,
+                elevation: 5,
+
+                backgroundColor: 'white',
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                //borderWidth: 1,
+                width: '85%',
+                padding: 10,
+                height: 50,
+                marginBottom: 20,
+            }}>
+                <TextInput
+                    style={{
+                        fontFamily: FONTS.regular,
+                        fontSize: 16,
+                        width: '80%',
+                    }}
+                    placeholder='Search'
+                    onChangeText={setQuery}
+                />
+                <Icon name="search" size={20} color="grey" />
+            </Row>
+
+            <Picker
+                variants={variants}
+                selectedVariant={selectedVariant}
+                setSelectedVariant={setSelectedVariant}
             />
-
 
             <ScrollView>
                 <View>
@@ -93,32 +127,144 @@ const HomeScreen = () => {
 
             </ScrollView>
             <BottomSheet
+                style={{
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
+                }}
                 enablePanDownToClose
                 ref={bottomSheetRef}
-                index={-1}
+                index={- 1
+                }
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
             >
-                <Button title="Close" onPress={handleClosePress} />
+                <Row style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    //borderWidth: 1,
+                    width: '100%',
+                    paddingHorisontal: 10,
+                    height: 50,
+                    //marginBottom: 10,
+                }}>
+                    <Text style={{
+                        fontFamily: FONTS.semibold,
+                        fontSize: 18
+                    }}>{'Добавить дело'.toUpperCase()}</Text>
+
+                    <TouchableOpacity
+                        onPress={handleClosePress}
+                        style={{
+                            // backgroundColor: 'white',
+                            // shadowColor: "#000",
+                            // shadowOffset: {
+                            //     width: 0,
+                            //     height: 2,
+                            // },
+                            // shadowOpacity: 0.25,
+                            // shadowRadius: 3.84,
+
+                            // elevation: 5,
+                            // top: 70,
+                            right: 0,
+                            position: 'absolute',
+                            // borderTopLeftRadius: 25,
+                            // borderBottomLeftRadius: 25,
+                            // borderLeftWidth: 1,
+                            // borderBottomWidth: 1,
+                            // borderTopWidth: 1,
+                            // //borderWidth: 1,
+                            width: 50,
+                            height: 50,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            //borderRadius: 25
+                        }}>
+                        <Icon name="close" size={25} color="red" />
+                    </TouchableOpacity>
+                </Row>
+
                 <View style={styles.contentContainer}>
                     <TextInput
-                        style={{ borderBottomWidth: 1, width: '90%', padding: 10 }}
+                        style={{
+                            fontFamily: FONTS.regular,
+                            fontSize: 16,
+                            borderBottomWidth: 0.5,
+                            borderColor: 'grey',
+                            width: '90%',
+                            padding: 10
+                        }}
                         placeholder='Title'
                         onChangeText={settitle}
                     />
                     <TextInput
-                        style={{ borderBottomWidth: 1, width: '90%', padding: 10 }}
+                        style={{
+                            fontFamily: FONTS.regular,
+                            fontSize: 16,
+                            borderBottomWidth: 0.5,
+                            borderColor: 'grey',
+                            width: '90%',
+                            padding: 10
+                        }}
                         placeholder='Description'
                         onChangeText={setdescription}
                     />
+                    <Row style={{
+                        justifyContent: 'space-between',
+                        borderBottomWidth: 0.5,
+                        borderColor: 'grey',
+                        width: '90%',
+                        marginBottom: 20,
+                    }}>
+                        <Text
+                            style={{
+                                fontFamily: FONTS.regular,
+                                fontSize: 16,
+                                padding: 10
+                            }}>{date.toDateString()}</Text>
+
+                        <TouchableOpacity
+                            onPress={() => setOpen(true)}
+                            style={{
+                                //borderRadius: 10,
+                                padding: 10,
+                                //backgroundColor: 'green'
+                            }}>
+                            <Text style={{
+                                fontFamily: FONTS.semibold,
+                                fontSize: 16,
+                                color: 'green',
+                                //height: 20,
+                            }}>Выбрать</Text>
+                        </TouchableOpacity>
+                    </Row>
                     <DatePicker
+                        modal
+                        open={open}
                         date={date}
-                        onDateChange={setDate}
+                        onConfirm={(date) => {
+                            setOpen(false)
+                            setDate(date)
+                        }}
+                        onCancel={() => {
+                            setOpen(false)
+                        }}
                     />
-                    <Button
-                        title="Add"
+                    <TouchableOpacity
                         onPress={onAddTip}
-                    />
+                        style={{
+                            borderRadius: 10,
+                            padding: 10,
+                            backgroundColor: 'green'
+                        }}>
+                        <Text style={{ fontFamily: FONTS.semibold, fontSize: 16, color: 'white' }}>Добавить</Text>
+                    </TouchableOpacity>
                 </View>
             </BottomSheet>
         </View>
