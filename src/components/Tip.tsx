@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import React, { FC, useState } from 'react';
 import { TTodo } from '../store/types/todo';
 import CheckBox from '@react-native-community/checkbox';
@@ -40,7 +40,7 @@ const Tip: FC<TTipProps> = ({ id, description, date, title, isDone, onToggleTip,
             {showDescr &&
                 <Description isDone={isDone} >{description}</Description>
             }
-            {/* <Text>{date?.toDateString()}</Text> */}
+            <Text>{date?.toDateString()}</Text>
         </Container>
     );
 };
