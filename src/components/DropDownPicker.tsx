@@ -1,9 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { FC, useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Row from './Row';
 import { FONTS } from '../config';
 import { TVariants } from '../screens/HomeScreen';
+//@ts-ignore
+import styled from 'styled-components/native';
 
 type TPickerProps = {
     variants: TVariants[];
@@ -22,57 +23,16 @@ const Picker: FC<TPickerProps> = ({ variants, selectedVariant, setSelectedVarian
     return (
         <View style={{ marginBottom: 10, }}>
             <TouchableOpacity onPress={() => setOpened((val) => !val)}>
-                <Row style={{
-                    justifyContent: 'space-between',
-                    backgroundColor: 'white',
-                    shadowColor: "#000",
-                    shadowOffset: {
-                        width: 0,
-                        height: 1,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 1,
-                    elevation: 5,
-                    padding: 10,
-                    marginBottom: 10,
-                    borderRadius: 2,
-                }}>
-                    <Text style={{
-                        fontFamily: FONTS.regular,
-                        fontSize: 16,
-                    }}>
-                        {selectedVariant}
-                    </Text>
-
+                <Container>
+                    <Text>{selectedVariant}</Text>
                     <Icon name={`chevron-${!opened ? "down" : 'up'}`} size={20} color="grey" />
-                </Row>
+                </Container>
             </TouchableOpacity>
             {opened && variants.map(e => <TouchableOpacity onPress={() => toggleFilter(e)}>
-                <Row style={{
-                    justifyContent: 'space-between',
-                    backgroundColor: 'white',
-                    // shadowColor: "#000",
-                    // shadowOffset: {
-                    //     width: 0,
-                    //     height: 1,
-                    // },
-                    // shadowOpacity: 0.25,
-                    // shadowRadius: 3.84,
-                    // elevation: 5,
-                    padding: 10,
-                    //marginBottom: 10,
-                    borderRadius: 2,
-                    borderBottom: 1
-                }}>
-                    <Text style={{
-                        fontFamily: FONTS.regular,
-                        fontSize: 16,
-                    }}>
-                        {e}
-                    </Text>
-
+                <ListItem>
+                    <Text>{e}</Text>
                     <Icon name={`list`} size={20} color="grey" />
-                </Row>
+                </ListItem>
             </TouchableOpacity>)
             }
         </View>
@@ -81,4 +41,35 @@ const Picker: FC<TPickerProps> = ({ variants, selectedVariant, setSelectedVarian
 
 export default Picker;
 
-const styles = StyleSheet.create({});
+const Text = styled.Text`
+    font-Family: ${FONTS.regular};
+    font-Size: 16;                
+`
+const ListItem = styled.View`
+    flex-direction: row;
+    justify-Content: space-between;
+    background-Color: white;
+    padding: 10px;
+    border-Radius: 2px;
+    border-Bottom: 1px
+`
+const Container = styled.View`
+    flex-direction: row;
+    justify-Content: space-between;
+    background-Color: white;
+    padding: 10px;
+    margin-Bottom: 10px;
+    border-Radius: 2px;
+`
+const styles = StyleSheet.create({
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 1,
+        elevation: 5,
+    }
+});
