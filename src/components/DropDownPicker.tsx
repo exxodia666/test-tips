@@ -28,7 +28,7 @@ const Picker: FC<TPickerProps> = ({ variants, selectedVariant, setSelectedVarian
                     <Icon name={`chevron-${!opened ? "down" : 'up'}`} size={20} color="grey" />
                 </Container>
             </TouchableOpacity>
-            {opened && variants.map(e => <TouchableOpacity onPress={() => toggleFilter(e)}>
+            {opened && variants.map(e => <TouchableOpacity key={e} onPress={() => toggleFilter(e)}>
                 <ListItem>
                     <Text>{e}</Text>
                     <Icon name={`list`} size={20} color="grey" />

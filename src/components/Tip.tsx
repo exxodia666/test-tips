@@ -40,7 +40,7 @@ const Tip: FC<TTipProps> = ({ id, description, date, title, isDone, onToggleTip,
             {showDescr &&
                 <Description isDone={isDone} >{description}</Description>
             }
-            <Text>{date?.toDateString()}</Text>
+            <Text>{new Date(date).toDateString()}</Text>
         </Container>
     );
 };
