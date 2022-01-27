@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import React, { useCallback, useMemo, useRef } from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useState } from 'react';
@@ -13,6 +13,7 @@ import BottomSheetComponent from '../components/BottomSheetComponent';
 import SearchInput from '../components/SearchInput';
 import { FlatList } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
+import { TextInput } from 'react-native-gesture-handler';
 
 export type TVariant = 'all' | 'completed' | 'inprogress';
 
@@ -76,6 +77,10 @@ const HomeScreen = () => {
     const handleOpenPress = () => bottomSheetRef?.current?.expand()
 
     const onAddTip = () => {
+        if (!title.length || !description.length) {
+            Alert.alert('Введите заголовок и описание заметки!');
+            return
+        }
         dispatch(addTodo({ title, description, date }));
         setdescription('');
         settitle('');
