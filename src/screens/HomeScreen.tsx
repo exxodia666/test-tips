@@ -54,7 +54,7 @@ const HomeScreen = () => {
                         ? isDone
                         : !isDone
             )
-            .filter(e => e.title.includes(query))
+            .filter(e => e.title.toLowerCase().includes(query.toLowerCase()))
         , [selectedVariant, todos, query]
     );
 
