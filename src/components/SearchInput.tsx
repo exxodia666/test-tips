@@ -1,24 +1,29 @@
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
 import styled from 'styled-components/native';
 import { FONTS } from '../config';
 
-const SearchInput: FC<{
+type TSearchInputProps = {
     query: string,
     setQuery: Dispatch<SetStateAction<string>>
-}> = ({ query, setQuery }) => {
+}
+
+const SearchInput: FC<TSearchInputProps> = ({ query, setQuery }) => {
     return (
         <Row style={styles.shadow}>
             <TextInputComponent
-                style={styles.textInput}
                 value={query}
-                placeholder='search...'
+                placeholder='Поиск...'
                 onChangeText={setQuery}
             />
             <IconContainer>
-                <Icon name="search" size={20} color="grey" />
+                <Icon
+                    name="search"
+                    size={20}
+                    color="grey"
+                />
             </IconContainer>
         </Row>
     );
@@ -27,7 +32,7 @@ const SearchInput: FC<{
 export default SearchInput;
 
 const TextInputComponent = styled.TextInput`
-    font-Family: ${FONTS.regular};
+    font-Family: ${FONTS.semibold};
     font-Size: 16px;
     border-Radius: 10px;
     padding-Left: 10px;

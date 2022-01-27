@@ -1,19 +1,26 @@
-import { StyleSheet, Text } from 'react-native';
-import React, { FC, useState } from 'react';
+import { StyleSheet } from 'react-native';
+import React, { FC } from 'react';
 import { TTodo } from '../store/types/todo';
 import CheckBox from '@react-native-community/checkbox';
 //@ts-ignore
 import styled from 'styled-components/native';
-import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FONTS } from '../config';
+import {
+    GestureDetector,
+    Swipeable
+} from 'react-native-gesture-handler';
 
 type TTipProps = TTodo & {
     onToggleTip: (id: number, value: boolean) => void
     onDeleteTip: (id: number) => void
 }
 
-const Tip: FC<TTipProps> = ({ id, description, date, title, isDone, onToggleTip, onDeleteTip }) => {
+const Tip: FC<TTipProps> = ({
+    id, description, date, title,
+    isDone, onToggleTip, onDeleteTip
+}) => {
+
     const toggleTip = (value: boolean) => {
         onToggleTip(id, value)
     }
@@ -21,29 +28,42 @@ const Tip: FC<TTipProps> = ({ id, description, date, title, isDone, onToggleTip,
         onDeleteTip(id)
     }
 
-    const [showDescr, setShowDescr] = useState(false);
+    const leftAction = () => <DeleteButton onPress={deleteTip}>
+        <Icon name="trash" size={25} color="red" />
+    </DeleteButton>
 
-    return (
-        <Container isDone={isDone} style={styles.shadow}>
-            <Row>
-                <CheckBox
-                    value={isDone}
-                    onValueChange={toggleTip}
-                />
-                <Title isDone={isDone}>
-                    {title}
-                </Title>
-                <TouchableOpacity onPress={deleteTip}>
-                    <Icon name="trash" size={25} color="red" />
-                </TouchableOpacity>
-            </Row>
-            {showDescr &&
-                <Description isDone={isDone} >{description}</Description>
-            }
-            <Text>{new Date(date).toDateString()}</Text>
-        </Container>
-    );
+    return (<GestureDetector>
+        <Swipeable renderLeftActions={leftAction}>
+            <Container isDone={isDone} style={styles.shadow}>
+                <DateText isDone={isDone}>
+                    {new Date(date).toDateString()}
+                </DateText>
+                <Row>
+                    <CheckBox
+                        tintColors={{ true: 'white' }}
+                        style={{ flex: 1 / 10 }}
+                        value={isDone}
+                        onValueChange={toggleTip}
+                    />
+                    <Title isDone={isDone}>
+                        {title}
+                    </Title>
+                </Row>
+                <Description isDone={isDone}>
+                    {description}
+                </Description>
+            </Container>
+        </Swipeable>
+    </GestureDetector>);
 };
+
+
+const DeleteButton = styled.TouchableOpacity`
+    width: 100%;
+    justify-Content: center;
+    align-Items: center;
+    height: 90px;
+`
 
 const Row = styled.View`
     flex-direction: row;
@@ -52,22 +72,37 @@ const Row = styled.View`
     align-Items: center;
     justify-Content: space-between;
 `
+const DateText = styled.Text<{ isDone: boolean }>`
+    ${/**@ts-ignore */''};
+    color: ${({ isDone }) => isDone ? 'white' : 'grey'};
+    font-Family: ${FONTS.regular};
+    font-Size: 12px;
+`
+
 const Description = styled.Text<{ isDone: boolean }>`
+    //border-width: 1;
     width: 75%;
+    ${/**@ts-ignore */''};
     color: ${({ isDone }) => isDone ? 'white' : 'black'};
-    fontFamily: ${FONTS.regular};
-    fontSize: 16px;
+    font-Family: ${FONTS.regular};
+    font-Size: 16px;
 `
 
 const Title = styled.Text<{ isDone: boolean }>`
+    flex: ${9 / 10};
+    //border-width: 1;
+    ${/**@ts-ignore */''};
     text-Decoration-Line: ${({ isDone }) => isDone ? 'line-through' : 'none'};
     width: 75%;
+    ${/**@ts-ignore */''};
     color: ${({ isDone }) => isDone ? 'white' : 'black'};
-    fontFamily: ${FONTS.regular};
-    fontSize: 16px;
+    font-Family: ${FONTS.regular};
+    font-Size: 16px;
 `
 
 const Container = styled.View<{ isDone: boolean }>`
+    //border-width: 1;
+    ${/**@ts-ignore */''};
     background-Color: ${({ isDone }) => isDone ? 'green' : 'white'};
     padding: 10px;
     margin-Bottom: 10px;

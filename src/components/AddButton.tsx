@@ -3,14 +3,42 @@ import React, { FC } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
 import styled from 'styled-components/native';
+import Animated, {
+    SharedValue,
+    useAnimatedStyle,
+    withTiming
+} from 'react-native-reanimated';
 
 type TAddButtonProps = {
+    rotation: SharedValue<number>;
+    bottomSheetIndex: number,
     handleOpenPress: () => void
-}
-const AddButton: FC<TAddButtonProps> = ({ handleOpenPress }) => {
+};
+
+const AddButton: FC<TAddButtonProps> = ({ bottomSheetIndex, handleOpenPress, rotation }) => {
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ rotateZ: `${rotation.value}deg` }],
+        };
+    });
+
+    const handleOnPress = () => {
+        handleOpenPress();
+        bottomSheetIndex === -1
+            ? rotation.value = withTiming(45)
+            : rotation.value = withTiming(0)
+    };
+
     return (
-        <Container onPress={handleOpenPress} style={styles.shadow}>
-            <Icon name="plus" size={25} color="green" />
+        <Container onPress={handleOnPress} style={styles.shadow}>
+            <Animated.View style={[animatedStyle]}>
+                <Icon
+                    size={25}
+                    name={"plus"}
+                    color={bottomSheetIndex === -1 ? "green" : "red"}
+                />
+            </Animated.View>
         </Container>
     );
 };

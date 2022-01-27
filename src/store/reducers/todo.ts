@@ -7,8 +7,10 @@ const initialState: TTodosStore = {
 }
 
 export const todoReducer = createReducer(initialState, (builder) => {
+
     builder
         .addCase(addTodo, (state, { payload }) => {
+            console.log(state);
             return {
                 todos: [...state.todos, {
                     id: state.todos.length ? state.todos[state.todos.length - 1].id + 1 : 0,
@@ -20,6 +22,7 @@ export const todoReducer = createReducer(initialState, (builder) => {
             }
         })
         .addCase(toggleTodo, (state, { payload }) => {
+            console.log(state);
             return {
                 todos: [...state.todos].map(
                     e => e.id === payload.id
@@ -29,6 +32,7 @@ export const todoReducer = createReducer(initialState, (builder) => {
             }
         })
         .addCase(deleteTodo, (state, { payload }) => {
+            console.log(state);
             return {
                 todos: [...state.todos].filter(
                     e => e.id !== payload.id

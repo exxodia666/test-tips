@@ -1,12 +1,18 @@
 import React, { FC } from 'react';
 import DatePicker from 'react-native-date-picker'
-
-const DatePickerComponent: FC<{
+type TDatePickerComponentProps = {
     open: boolean,
     date: Date,
     setOpen: (val: boolean) => void,
     setDate: (date: Date) => void
-}> = ({ open, date, setOpen, setDate }) => {
+}
+
+const DatePickerComponent: FC<TDatePickerComponentProps> = ({
+    open,
+    date,
+    setOpen,
+    setDate
+}) => {
     return (
         <DatePicker
             modal
